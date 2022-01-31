@@ -1,2 +1,4 @@
 /.idea
-/CDP_Practice_task/.*
+/CDP/.*
+/CDP/terraform.tfstate
+/CDP/terraform.tfstate.backup
