@@ -20,20 +20,31 @@ resource "aws_security_group" "Nextcloud_Security_Group" {
     cidr_blocks      = ["0.0.0.0/0"]
     ipv6_cidr_blocks = ["::/0"]
   }
+
+  tags = {
+    Name = "Nextcloud Security Group"
+  }
 }
 
 resource "aws_security_group" "RDS_Security_Group" {
-  name = "RDS_Security_Group"
+  name   = "RDS_Security_Group"
+  vpc_id = aws_vpc.cdp_vpc.id
 
   ingress {
-    from_port = 0
-    protocol  = ""
-    to_port   = 0
+    from_port       = 1433
+    protocol        = "tcp"
+    to_port         = 1433
+    security_groups = [aws_security_group.Nextcloud_Security_Group.id]
   }
 
   egress {
-    from_port = 0
-    protocol  = ""
-    to_port   = 0
+    from_port       = 1433
+    protocol        = "tcp"
+    to_port         = 1433
+    security_groups = [aws_security_group.Nextcloud_Security_Group.id]
+  }
+
+  tags = {
+    Name = "DB Private Security Group"
   }
 }
