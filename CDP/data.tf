@@ -1,9 +1,10 @@
-#Last version of Linux Ubuntu 20.04 LTS, applicable for all regions
-data "aws_ami" "latest_ubuntu" {
-  owners      = ["099720109477"]
+data "aws_ami" "latest_amazon_linux" {
+  owners      = ["amazon"]
   most_recent = true
   filter {
     name   = "name"
-    values = ["ubuntu/images/hvm-ssd/ubuntu-focal-20.04-amd64-server-*"]
+    values = ["amzn2-ami-hvm-*-x86_64-gp2"]
   }
 }
+
+data "aws_availability_zones" "available" {}

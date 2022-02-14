@@ -1,4 +1,3 @@
 /.idea
 /CDP/.*
-/CDP/terraform.tfstate
-/CDP/terraform.tfstate.backup
+/CDP/terraform.*

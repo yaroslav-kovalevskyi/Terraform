@@ -3,7 +3,7 @@ resource "aws_security_group" "Nextcloud_Security_Group" {
   vpc_id = aws_vpc.cdp_vpc.id
 
   dynamic "ingress" {
-    for_each = [80, 443, 22]
+    for_each = var.allow_ports
     content {
       from_port        = ingress.value
       to_port          = ingress.value
@@ -31,16 +31,16 @@ resource "aws_security_group" "RDS_Security_Group" {
   vpc_id = aws_vpc.cdp_vpc.id
 
   ingress {
-    from_port       = 1433
+    from_port       = 3306
     protocol        = "tcp"
-    to_port         = 1433
+    to_port         = 3306
     security_groups = [aws_security_group.Nextcloud_Security_Group.id]
   }
 
   egress {
-    from_port       = 1433
+    from_port       = 3306
     protocol        = "tcp"
-    to_port         = 1433
+    to_port         = 3306
     security_groups = [aws_security_group.Nextcloud_Security_Group.id]
   }
 

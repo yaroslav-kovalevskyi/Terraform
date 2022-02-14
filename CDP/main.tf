@@ -1,13 +1,15 @@
+#----------------------------------------------------------
+# Provision Highly Available instance and database in any Region
+# Create:
+#    - Virtual Private Cloud
+#    - Security Groups for Nextcloud and Database
+#    - Separated subnets for Nextcloud (public) and Database (private)
+#    - Database instance MySQL 5.7 (with preventing destroy)
+#    - Launch Configuration with Auto AMI Lookup (Amazon Linux)
+#    - Auto Scaling Group for Nextcloud instance
+#    - Classic Load Balancer for Nextcloud subnet
+#-----------------------------------------------------------
+
 provider "aws" {
-  region = "eu-north-1"
-}
-
-resource "aws_vpc" "cdp_vpc" {
-  cidr_block = "10.0.0.0/16"
-  instance_tenancy = "default"
-  enable_dns_hostnames = true
-
-  tags = {
-    Name = "[CDP] VPC"
-  }
+  region = var.region
 }
