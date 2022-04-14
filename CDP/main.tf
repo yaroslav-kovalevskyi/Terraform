@@ -13,3 +13,11 @@
 provider "aws" {
   region = var.region
 }
+
+terraform {
+  backend "s3" {
+    bucket = "cdp-remote-tfstate"
+    key    = "cdp/terraform.tfstate"
+    region = "eu-north-1"
+  }
+}

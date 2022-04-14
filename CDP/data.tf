@@ -7,4 +7,16 @@ data "aws_ami" "latest_amazon_linux" {
   }
 }
 
+data "aws_ssm_parameter" "cdp_rds_username" {
+  name = "/cdp/db_username"
+
+  depends_on = [aws_ssm_parameter.cdp_rds_username]
+}
+
 data "aws_availability_zones" "available" {}
+
+data "aws_ssm_parameter" "cdp_rds_password" {
+  name = "/cdp/db_password"
+
+  depends_on = [aws_ssm_parameter.cdp_rds_password]
+}

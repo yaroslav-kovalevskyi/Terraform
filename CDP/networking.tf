@@ -1,23 +1,23 @@
-resource "aws_vpc" "cdp_vpc" {
+resource "aws_vpc" "main" {
   cidr_block           = "10.0.0.0/16"
   instance_tenancy     = "default"
   enable_dns_hostnames = true
 
   tags = {
-    Name = "[CDP] VPC"
+    Name = "[${var.project}] VPC"
   }
 }
 
 resource "aws_internet_gateway" "to_Internet" {
-  vpc_id = aws_vpc.cdp_vpc.id
+  vpc_id = aws_vpc.main.id
 
   tags = {
-    Name = "[CDP] Internet Gateway"
+    Name = "[${var.project}] Internet Gateway"
   }
 }
 
 resource "aws_subnet" "public" {
-  vpc_id                  = aws_vpc.cdp_vpc.id
+  vpc_id                  = aws_vpc.main.id
   cidr_block              = "10.0.0.0/24"
   availability_zone       = data.aws_availability_zones.available.names[0]
   map_public_ip_on_launch = true
@@ -25,12 +25,12 @@ resource "aws_subnet" "public" {
   depends_on = [aws_internet_gateway.to_Internet]
 
   tags = {
-    Name = "[CDP] Public Subnet",
+    Name = "[${var.project}] Public Subnet",
   }
 }
 
 resource "aws_route_table" "to_Internet" {
-  vpc_id = aws_vpc.cdp_vpc.id
+  vpc_id = aws_vpc.main.id
 
   route {
     cidr_block = "0.0.0.0/0"
@@ -38,7 +38,7 @@ resource "aws_route_table" "to_Internet" {
   }
 
   tags = {
-    Name = "[CDP] Public Route Table"
+    Name = "[${var.project}] Public Route Table"
   }
 }
 
@@ -48,22 +48,22 @@ resource "aws_route_table_association" "public" {
 }
 
 resource "aws_subnet" "db_subnet_a" {
-  vpc_id            = aws_vpc.cdp_vpc.id
+  vpc_id            = aws_vpc.main.id
   availability_zone = data.aws_availability_zones.available.names[0]
   cidr_block        = "10.0.11.0/24"
 
   tags = {
-    Name = "[CDP] DB Subnet A"
+    Name = "[${var.project}] DB Subnet A"
   }
 }
 
 resource "aws_subnet" "db_subnet_b" {
-  vpc_id            = aws_vpc.cdp_vpc.id
+  vpc_id            = aws_vpc.main.id
   availability_zone = data.aws_availability_zones.available.names[1]
   cidr_block        = "10.0.21.0/24"
 
   tags = {
-    Name = "[CDP] DB Subnet B"
+    Name = "[${var.project}] DB Subnet B"
   }
 }
 
