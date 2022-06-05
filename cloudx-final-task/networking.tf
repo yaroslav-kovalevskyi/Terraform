@@ -2,7 +2,6 @@ resource "aws_vpc" "main" {
   cidr_block           = "10.10.0.0/16"
   enable_dns_hostnames = true
   enable_dns_support   = true
-
   tags = {
     Name = var.project
   }
@@ -13,7 +12,6 @@ resource "aws_subnet" "public" {
   vpc_id            = aws_vpc.main.id
   cidr_block        = element(var.public_subnet_cidr, count.index)
   availability_zone = element(var.subnet_zones, count.index)
-
   tags = {
     Name = "public_${element(var.subnet_zones, count.index)}"
     Tier = "Public"
@@ -25,7 +23,6 @@ resource "aws_subnet" "private" {
   vpc_id            = aws_vpc.main.id
   cidr_block        = element(var.private_subnet_cidr, count.index)
   availability_zone = element(var.subnet_zones, count.index)
-
   tags = {
     Name = "private_${element(var.subnet_zones, count.index)}"
     Tier = "Private"
@@ -37,7 +34,6 @@ resource "aws_subnet" "db" {
   vpc_id            = aws_vpc.main.id
   cidr_block        = element(var.db_subnet_cidr, count.index)
   availability_zone = element(var.subnet_zones, count.index)
-
   tags = {
     Name = "private_db_${element(var.subnet_zones, count.index)}"
     Tier = "Private"
@@ -46,7 +42,6 @@ resource "aws_subnet" "db" {
 
 resource "aws_internet_gateway" "to_Internet" {
   vpc_id = aws_vpc.main.id
-
   tags = {
     Name = "${var.project}-igw"
   }
@@ -54,12 +49,10 @@ resource "aws_internet_gateway" "to_Internet" {
 
 resource "aws_route_table" "to_Internet" {
   vpc_id = aws_vpc.main.id
-
   route {
     cidr_block = "0.0.0.0/0"
     gateway_id = aws_internet_gateway.to_Internet.id
   }
-
   tags = {
     Name = "public_rt"
   }
@@ -73,7 +66,6 @@ resource "aws_route_table_association" "public-internet" {
 
 resource "aws_route_table" "private_rt" {
   vpc_id = aws_vpc.main.id
-
   tags = {
     Name = "private_rt"
   }

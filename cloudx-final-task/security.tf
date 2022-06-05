@@ -14,12 +14,6 @@ resource "aws_security_group" "ec2" {
     protocol    = "tcp"
     cidr_blocks = [aws_vpc.main.cidr_block]
   }
-  /*ingress {
-    from_port       = 2368
-    to_port         = 2368
-    protocol        = "tcp"
-    cidr_blocks = aws_alb
-  } */
   egress {
     from_port        = 0
     to_port          = 0
@@ -32,6 +26,15 @@ resource "aws_security_group" "ec2" {
   }
 }
 
+resource "aws_security_group_rule" "additional_to_ec2" {
+  type                     = "ingress"
+  from_port                = 2368
+  to_port                  = 2368
+  protocol                 = "tcp"
+  security_group_id        = aws_security_group.ec2.id
+  source_security_group_id = aws_security_group.alb.id
+}
+
 resource "aws_security_group" "fargate" {
   name        = "fargate_pool"
   description = "Allow access for Fargate instances"
@@ -42,12 +45,6 @@ resource "aws_security_group" "fargate" {
     protocol    = "tcp"
     cidr_blocks = [aws_vpc.main.cidr_block]
   }
-  /*ingress {
-    from_port       = 2368
-    to_port         = 2368
-    protocol        = "tcp"
-    cidr_blocks = aws_alb
-  } */
   egress {
     from_port        = 0
     to_port          = 0
@@ -58,6 +55,15 @@ resource "aws_security_group" "fargate" {
   tags = {
     Name = "${var.project} Fargate"
   }
+}
+
+resource "aws_security_group_rule" "additional_to_fargate" {
+  type                     = "ingress"
+  from_port                = 2368
+  to_port                  = 2368
+  protocol                 = "tcp"
+  security_group_id        = aws_security_group.fargate.id
+  source_security_group_id = aws_security_group.alb.id
 }
 
 resource "aws_security_group" "mysql" {

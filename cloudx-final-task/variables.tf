@@ -45,6 +45,7 @@ variable "subnet_zones" {
 /*--------------------
 -------DATABASE-------
 --------------------*/
+
 variable "db_name" {
   type        = string
   default     = "ghost"

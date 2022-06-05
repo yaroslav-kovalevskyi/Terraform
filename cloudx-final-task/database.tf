@@ -10,10 +10,8 @@ resource "aws_db_instance" "ghost" {
   password            = data.aws_ssm_parameter.db_password.value
   skip_final_snapshot = true
   apply_immediately   = true
-
   db_subnet_group_name   = aws_db_subnet_group.db_subnet_group.name
   vpc_security_group_ids = [aws_security_group.mysql.id]
-
   tags = {
     Name = "${var.project}_MySQL_Database"
   }

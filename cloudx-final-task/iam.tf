@@ -1,7 +1,6 @@
 resource "aws_iam_role_policy" "ghost_app" {
   name = "ghost_app_policy"
   role = aws_iam_role.ghost_app.id
-
   policy = jsonencode({
     "Version" : "2012-10-17",
     "Statement" : [
@@ -33,7 +32,6 @@ resource "aws_iam_role_policy" "ghost_app" {
 
 resource "aws_iam_role" "ghost_app" {
   name = "ghost_app_role"
-
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
