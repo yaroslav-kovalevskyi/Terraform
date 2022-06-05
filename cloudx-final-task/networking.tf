@@ -91,3 +91,10 @@ resource "aws_route_table_association" "private-db" {
   route_table_id = aws_route_table.private_rt.id
 }
 
+resource "aws_db_subnet_group" "db_subnet_group" {
+  name       = "ghost"
+  subnet_ids = aws_subnet.db.*.id
+  tags = {
+    Name = "${var.project} DB Subnet Group"
+  }
+}

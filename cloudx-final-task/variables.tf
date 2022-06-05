@@ -41,3 +41,25 @@ variable "subnet_zones" {
   description = "List of subnets AZs"
   default     = ["eu-south-1a", "eu-south-1b", "eu-south-1c"]
 }
+
+/*--------------------
+-------DATABASE-------
+--------------------*/
+variable "db_name" {
+  type        = string
+  default     = "ghost"
+  description = "Database's name"
+}
+
+variable "db_instance_class" {
+  type        = string
+  default     = "db.t3.micro"
+  description = "Type and size of database instance"
+}
+
+variable "db_engine_version" {
+  type        = string
+  default     = "8.0"
+  description = "Database's engine version"
+}
+
