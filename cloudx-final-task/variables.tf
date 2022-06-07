@@ -11,7 +11,7 @@ variable "project" {
 variable "region" {
   type        = string
   description = "default region to deploy the infrastructure"
-  default     = "eu-south-1"
+  default     = "eu-central-1"
 }
 
 /*--------------------
@@ -35,11 +35,11 @@ variable "db_subnet_cidr" {
   description = "List of subnets CIDRs"
   default     = ["10.10.20.0/24", "10.10.21.0/24", "10.10.22.0/24"]
 }
-#Attention: subnets availability zones are hardcoded and attached to the eu-south-1 region.
+#Attention: subnets availability zones are hardcoded and attached to the eu-central-1 region.
 variable "subnet_zones" {
   type        = list(any)
   description = "List of subnets AZs"
-  default     = ["eu-south-1a", "eu-south-1b", "eu-south-1c"]
+  default     = ["eu-central-1a", "eu-central-1b", "eu-central-1c"]
 }
 
 /*--------------------
@@ -62,5 +62,21 @@ variable "db_engine_version" {
   type        = string
   default     = "8.0"
   description = "Database's engine version"
+}
+
+/*--------------------
+-------INSTANCE-------
+--------------------*/
+
+variable "ec2_instance_type" {
+  type        = string
+  description = "EC2 Instance Type"
+  default     = "t2.micro"
+}
+
+variable "ec2_key_name" {
+  type        = string
+  description = "SSH key to connect to EC2s"
+  default     = "ghost-ec2-pool"
 }
 

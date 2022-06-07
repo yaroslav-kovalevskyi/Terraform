@@ -13,3 +13,12 @@ data "aws_ssm_parameter" "db_password" {
   name       = "/ghost/dbpassw"
   depends_on = [aws_ssm_parameter.db_password]
 }
+
+data "aws_ami" "latest_amazon_linux" {
+  owners      = ["amazon"]
+  most_recent = true
+  filter {
+    name   = "name"
+    values = ["amzn2-ami-hvm-*-x86_64-gp2"]
+  }
+}

@@ -46,3 +46,11 @@ resource "aws_iam_role" "ghost_app" {
     ]
   })
 }
+
+resource "aws_iam_instance_profile" "cloudx_instance_profile" {
+  name = "cloudx_instance_profile"
+  role = aws_iam_role.ghost_app.name
+  tags = {
+    Name = "GhostApp Instance Profile"
+  }
+}
