@@ -1,0 +1,19 @@
+[
+   {
+      "name":"ghost",
+      "image":"https://hub.docker.com/_/ghost",
+      "portMappings":[
+         {
+            "hostPort":80,
+            "containerPort":80,
+            "protocol":"tcp"
+         }
+      ],
+      "mountPoints":[
+         {
+            "containerPath":"/var/lib/ghost/content",
+            "sourceVolume":"ghost-storage"
+         }
+      ]
+   }
+]

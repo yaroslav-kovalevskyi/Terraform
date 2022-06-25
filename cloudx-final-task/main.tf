@@ -4,9 +4,9 @@ provider "aws" {
 
 terraform {
   backend "s3" {
-    bucket = "cdp-remote-tfstate"
-    key    = "cloudx-associate-aws-devops-12-yaroslav-k/terraform.tfstate"
-    region = "eu-north-1"
+    bucket = "kovalevskyi-remote-tfstate"
+    key    = "cloudx-associate-aws-devops-12/terraform.tfstate"
+    region = "eu-central-1"
   }
 }
 

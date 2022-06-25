@@ -16,8 +16,8 @@ provider "aws" {
 
 terraform {
   backend "s3" {
-    bucket = "cdp-remote-tfstate"
+    bucket = "kovalevskyi-remote-tfstate"
     key    = "cdp/terraform.tfstate"
-    region = "eu-north-1"
+    region = "eu-central-1"
   }
 }

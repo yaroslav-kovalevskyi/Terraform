@@ -13,7 +13,7 @@ resource "aws_launch_template" "ghost-lt" {
 
 resource "aws_autoscaling_group" "ghost_ec2_pool" {
   name                = "${var.project}-ghost"
-  vpc_zone_identifier = [aws_subnet.public[0].id, aws_subnet.public[1].id, aws_subnet.public[2].id] ## Subnets hardcoded
+  vpc_zone_identifier = [for subnet in aws_subnet.public : subnet.id]
   max_size            = 1
   min_size            = 1
   target_group_arns   = [aws_lb_target_group.ghost-ec2.id]

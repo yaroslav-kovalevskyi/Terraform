@@ -80,3 +80,12 @@ variable "ec2_key_name" {
   default     = "ghost-ec2-pool"
 }
 
+/*--------------------
+-------ENDPOINTS------
+--------------------*/
+
+variable "vpc_endpoint" {
+  type        = list(any)
+  description = "Desired services that needed access through endpoints"
+  default     = ["ssm", "ecr.dkr", "elasticfilesystem", "s3", "monitoring", "logs"]
+}
