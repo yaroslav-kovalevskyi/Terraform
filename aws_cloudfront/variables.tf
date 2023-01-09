@@ -1,6 +1,6 @@
 variable "project" {
   description = "The name of project"
-  default     = "CloudfrontFromTerraform"
+  default     = "CloudfrontFromTerraform" 
 }
 
 variable "bucket_for_cf" {
@@ -69,4 +69,9 @@ variable "restricted_countries" {
   description = "Countries with restricted access (ISO 3166 alpha-2 country code list)"
   type        = list(any)
   default     = ["RU", "BY", "IR"]
+}
+
+variable "cert_mpv" {
+  default = "TLSv1.2_2019"
+  description = "Certificate Minimum Protocol version"
 }

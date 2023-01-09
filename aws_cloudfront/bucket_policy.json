@@ -11,7 +11,7 @@
             "Resource": "arn:aws:s3:::yk-cf-from-tf/*",
             "Condition": {
                 "StringEquals": {
-                    "AWS:SourceArn": "arn:aws:cloudfront::863592393036:distribution/E2498KO0KY7F33"
+                    "aws:SourceAccount": "863592393036"
                 }
             }
         }
