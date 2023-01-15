@@ -1,1 +1,0 @@
-<img src="cloudfront.png">

@@ -1,77 +1,49 @@
-variable "project" {
-  description = "The name of project"
-  default     = "CloudfrontFromTerraform"
+locals {
+  bucket_name       = data.aws_s3_bucket.bucket_for_cloudfront.bucket
+  bucket_region     = data.aws_s3_bucket.bucket_for_cloudfront.region
+  full_origin_name  = format("%s.s3.%s.amazonaws.com", local.bucket_name, local.bucket_region)
+  formatted_domains = formatlist("%s.%s", var.sub_domains, var.project_domain_name)
+  all_domains       = concat(local.formatted_domains, formatlist(var.project_domain_name))
 }
 
-variable "bucket_for_cf" {
-  description = "The source of cloufront distribution origin"
-  default     = "yk-cf-from-tf"
+variable "project_name" {
+  default = "totem-test"
 }
 
-variable "default_object" {
-  description = "Object to show by default"
-  default     = "index.html"
+variable "project_domain_name" {
+  default = "wouldyouliketo.click"
 }
 
-variable "sub_domain" {
-  description = "Alias to create in Route53 and associate it with with CloudFront"
-  default     = "cf-from-tf"
+variable "sub_domains" {
+  type        = list(any)
+  description = "All sub domains which you want to use with Cloudfront"
+  default     = ["main-cf", "sec-cf", "manual", "cf-from-tf"]
 }
 
-variable "domain" {
-  description = "Project domain name"
-  default     = "wouldyouliketo.click"
+variable "bucket_for_cloudfront" {
+  description = "Bucket for Cloudfront origin source"
+  default     = "totem-bucket-for-cloudfront"
+}
+
+variable "lambda_function" {
+  default = "lambdaEdge1"
 }
 
 variable "allowed_methods" {
-  description = "List of allowed cache methods"
-  default     = ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"]
-  type        = list(any)
+  default = ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"]
 }
 
-variable "http_methods" {
-  type        = list(any)
-  description = "Controls whether CloudFront caches the response to requests using the specified HTTP methods"
-  default     = ["GET", "HEAD"]
-}
-
-variable "vpp" {
-  description = "Viewer Protocol Policy"
-  default     = "redirect-to-https"
-}
-
-variable "min_ttl" {
-  description = "Minimum Time to Live (in seconds)"
-  default     = 0
-}
-
-variable "default_ttl" {
-  description = "Default Time to Live (in seconds)"
-  default     = 3600
+variable "cached_methods" {
+  default = ["GET", "HEAD"]
 }
 
 variable "max_ttl" {
-  description = "Maximum Time to Live (in seconds)"
-  default     = 86400
-}
-
-variable "price_class" {
-  description = "One of three classes to be selected"
-  default     = "PriceClass_100"
-}
-
-variable "restriction_type" {
-  description = "whitelist or blacklist to be selected"
-  default     = "blacklist"
+  description = "Maximum Time to Live (in seconds). Default TTL counts according to maximum TTL"
+  default     = 10800
 }
 
 variable "restricted_countries" {
   description = "Countries with restricted access (ISO 3166 alpha-2 country code list)"
   type        = list(any)
-  default     = ["RU", "BY", "IR"]
-}
-
-variable "cert_mpv" {
-  default     = "TLSv1.2_2019"
-  description = "Certificate Minimum Protocol version"
+  default     = ["RU", "BY", "IR", "IQ"]
 }
