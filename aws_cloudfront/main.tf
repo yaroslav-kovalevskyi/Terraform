@@ -12,6 +12,7 @@ provider "aws" {
     tags = {
       terraform = "true"
       Owner     = "YK"
+      Environment = var.environment
     }
   }
 }

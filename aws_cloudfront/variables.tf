@@ -7,23 +7,29 @@ locals {
   all_domains                 = concat(formatlist(var.project_domain_name), local.formatted_domains) //, local.formatted_alternate_domains) // ❗️closing bracket need to be deleted as well
 }
 
-variable "project_name" {
-  default = "totem-test"
+variable "environment" {}
+
+variable "bucket_for_cloudfront" {
+  description = "Bucket for Cloudfront origin source"
+  default     = ""
 }
 
-variable "project_domain_name" {
-  default = "wouldyouliketo.click"
-}
+variable "lb_name" {}
+
+variable "project_name" {}
+
+variable "project_domain_name" {}
 
 variable "sub_domains" {
   type        = list(any)
   description = "All sub domains which you want to use with Cloudfront"
-  default     = ["main-cf", "sec-cf", "manual", "cf-from-tf"]
+  default     = []
 }
 
 
 //❗️ Uncomment all blocks with exlamation mark  
 //❗️ to switch on Cloudfront for different domain names.
+//❗️ DO NOT FORGET CHECK .TFVARS FILE AS WELL
 # variable "alternate_project_domain_name" {
 #   description = "Use in case project has content for Cloudfront, associated with another domain name"
 #   default     = ""
@@ -34,10 +40,6 @@ variable "sub_domains" {
 # }
 // ------------------------------------------------------------
 
-variable "bucket_for_cloudfront" {
-  description = "Bucket for Cloudfront origin source"
-  default     = "totem-bucket-for-cloudfront"
-}
 
 variable "allowed_methods" {
   default = ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"]

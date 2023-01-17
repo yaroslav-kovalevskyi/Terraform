@@ -2,6 +2,10 @@ data "aws_s3_bucket" "bucket_for_cloudfront" {
   bucket = var.bucket_for_cloudfront
 }
 
+data "aws_lb" "lb_info" {
+  name = var.lb_name
+}
+
 data "aws_route53_zone" "project_hosted_zone" {
   name         = var.project_domain_name
   private_zone = false
@@ -18,8 +22,6 @@ data "aws_acm_certificate" "amazon_issued" {
   # statuses = [] // PENDING_VALIDATION, ISSUED, INACTIVE, EXPIRED, VALIDATION_TIMED_OUT, REVOKED, FAILED
   # types = [] // AMAZON_ISSUED, PRIVATE, IMPORTED
 }
-
-
 
 // ----------------------------------------------------------------------
 // -------------------------GENERATED-POLICIES---------------------------

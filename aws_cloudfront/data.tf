@@ -2,9 +2,8 @@ data "aws_s3_bucket" "bucket_for_cloudfront" {
   bucket = var.bucket_for_cloudfront
 }
 
-data "aws_s3_objects" "bucket_subfolders" {
-  bucket    = var.bucket_for_cloudfront
-  delimiter = "/"
+data "aws_lb" "lb_info" {
+  name = var.lb_name
 }
 
 data "aws_route53_zone" "project_hosted_zone" {
@@ -23,10 +22,6 @@ data "aws_acm_certificate" "amazon_issued" {
   # statuses = [] // PENDING_VALIDATION, ISSUED, INACTIVE, EXPIRED, VALIDATION_TIMED_OUT, REVOKED, FAILED
   # types = [] // AMAZON_ISSUED, PRIVATE, IMPORTED
 }
-
-# data "aws_lambda_function" "lambdaedge" {
-#   function_name = var.lambda_function
-# }
 
 // ----------------------------------------------------------------------
 // -------------------------GENERATED-POLICIES---------------------------

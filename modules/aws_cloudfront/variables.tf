@@ -7,6 +7,17 @@ locals {
   all_domains                 = concat(formatlist(var.project_domain_name), local.formatted_domains) //, local.formatted_alternate_domains) // ❗️closing bracket (col 101) need to be deleted as well
 }
 
+variable "environment" {}
+
+variable "bucket_for_cloudfront" {
+  description = "Bucket for Cloudfront origin source"
+  default     = ""  
+}
+
+variable "project_domain_name" {}
+
+variable "lb_name" {}
+
 variable "project_name" {}
 
 variable "project_domain_name" {}
@@ -19,6 +30,7 @@ variable "sub_domains" {
 
 //❗️ Uncomment all blocks with exlamation mark  
 //❗️ to switch on Cloudfront for different domain names.
+//❗️ DO NOT FORGET CHECK .TFVARS FILE AS WELL
 # variable "alternate_project_domain_name" {
 #   description = "Use in case project has content for Cloudfront, associated with another domain name"
 #   default     = ""
@@ -29,10 +41,6 @@ variable "sub_domains" {
 # }
 // ------------------------------------------------------------
 
-variable "bucket_for_cloudfront" {
-  description = "Bucket for Cloudfront origin source"
-  default     = ""  
-}
 
 variable "allowed_methods" {
   default = ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"]
