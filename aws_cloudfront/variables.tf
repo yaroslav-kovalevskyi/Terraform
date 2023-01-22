@@ -3,8 +3,8 @@ locals {
   bucket_region               = data.aws_s3_bucket.bucket_for_cloudfront.region
   full_origin_name            = format("%s.s3.%s.amazonaws.com", local.bucket_name, local.bucket_region)
   formatted_domains           = formatlist("%s.%s", var.sub_domains, var.project_domain_name)
-  # formatted_alternate_domains = (formatlist("%s.%s", var.sub_domains_for_alternate_domain, var.alternate_project_domain_name)) // ❗️
-  all_domains                 = concat(formatlist(var.project_domain_name), local.formatted_domains) //, local.formatted_alternate_domains) // ❗️closing bracket need to be deleted as well
+  #formatted_alternate_domains = (formatlist("%s.%s", var.sub_domains_for_alternate_domain, var.alternate_project_domain_name)) // ❗️
+  all_domains                 = concat(formatlist(var.project_domain_name), local.formatted_domains) #, local.formatted_alternate_domains) // ❗️closing bracket need to be deleted as well
 }
 
 variable "environment" {}
@@ -14,11 +14,17 @@ variable "bucket_for_cloudfront" {
   default     = ""
 }
 
-variable "lb_name" {}
+variable "lb_name" {
+  description = "LoadBalancer name for Cloudfront origin source"
+}
 
-variable "project_name" {}
+variable "project_name" {
+  description = "The name of your project"
+}
 
-variable "project_domain_name" {}
+variable "project_domain_name" {
+  description = "Main project domain name"
+}
 
 variable "sub_domains" {
   type        = list(any)
@@ -36,16 +42,19 @@ variable "sub_domains" {
 # }
 
 # variable "sub_domains_for_alternate_domain" {
+#   description = "List of sub domains which should be associated with alternate domain name"
 #   default = []
 # }
 // ------------------------------------------------------------
 
 
 variable "allowed_methods" {
+  description = "List of allowed HTTP methods"
   default = ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"]
 }
 
 variable "cached_methods" {
+  description = "Allowed caching methods"
   default = ["GET", "HEAD"]
 }
 
@@ -55,7 +64,7 @@ variable "max_ttl" {
 }
 
 variable "restricted_countries" {
-  description = "Countries with restricted access (ISO 3166 alpha-2 country code list)"
+  description = "Countries with restricted access (according to ISO 3166 alpha-2 country code list)"
   type        = list(any)
   default     = ["RU", "BY", "IR", "IQ"]
 }
