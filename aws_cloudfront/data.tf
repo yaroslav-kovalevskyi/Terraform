@@ -2,9 +2,9 @@ data "aws_s3_bucket" "bucket_for_cloudfront" {
   bucket = var.bucket_for_cloudfront
 }
 
-data "aws_lb" "lb_info" {
-  name = var.lb_name
-}
+# data "aws_lb" "lb_info" {
+#   name = var.lb_name
+# }
 
 data "aws_route53_zone" "project_hosted_zone" {
   name         = var.project_domain_name

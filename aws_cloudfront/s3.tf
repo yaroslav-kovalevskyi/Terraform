@@ -1,5 +1,3 @@
-
-
 resource "aws_s3_bucket_policy" "only_cloudfront_has_access" {
   bucket = data.aws_s3_bucket.bucket_for_cloudfront.id
   policy = data.aws_iam_policy_document.only_cloudfront_has_access.json
@@ -18,8 +16,14 @@ resource "aws_s3_bucket_acl" "private" {
   acl    = "private"
 }
 
-resource "aws_s3_object" "lambda_to_bucket" {
+resource "aws_s3_object" "lambda_content_to_bucket" {
   bucket = aws_s3_bucket.bucket_for_lambda.id
-  key    = "lambda.py.zip"
-  source = "./lambda.py.zip"
+  key    = "content.py.zip"
+  source = "./lambdas/content.py.zip"
+}
+
+resource "aws_s3_object" "lambda_redirect_to_bucket" {
+  bucket = aws_s3_bucket.bucket_for_lambda.id
+  key    = "redirect.js.zip"
+  source = "./lambdas/redirect.js.zip"
 }

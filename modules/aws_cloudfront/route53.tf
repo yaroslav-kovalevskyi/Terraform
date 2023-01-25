@@ -12,3 +12,17 @@ resource "aws_route53_record" "cloudfront_records" {
     aws_cloudfront_distribution.project_cloudfront
   ]
 }
+
+resource "aws_route53_record" "www_to_non_www" {
+  zone_id = data.aws_route53_zone.project_hosted_zone.id
+  name    = format("%s%s", "www.", var.project_domain_name)
+  type    = "A"
+  alias {
+    name                   = aws_cloudfront_distribution.project_cloudfront.domain_name
+    zone_id                = aws_cloudfront_distribution.project_cloudfront.hosted_zone_id
+    evaluate_target_health = false
+  }
+  depends_on = [
+    aws_cloudfront_distribution.project_cloudfront
+  ]
+}

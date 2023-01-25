@@ -54,6 +54,11 @@ resource "aws_cloudfront_distribution" "project_cloudfront" {
       event_type = "origin-request"
       lambda_arn = aws_lambda_function.content_handler.qualified_arn
     }
+
+    lambda_function_association {
+      event_type = "viewer-request"
+      lambda_arn = aws_lambda_function.redirect_handler.qualified_arn
+    }
   }
 
   custom_error_response {
@@ -78,7 +83,7 @@ resource "aws_cloudfront_distribution" "project_cloudfront" {
   }
 
   depends_on = [
-    aws_lambda_function.content_handler
+    aws_lambda_function.content_handler,
+    aws_lambda_function.redirect_handler
   ]
 }
-

@@ -2,9 +2,10 @@ locals {
   bucket_name                 = data.aws_s3_bucket.bucket_for_cloudfront.bucket
   bucket_region               = data.aws_s3_bucket.bucket_for_cloudfront.region
   full_origin_name            = format("%s.s3.%s.amazonaws.com", local.bucket_name, local.bucket_region)
+  fqdn                        = format("%s%s", "www.", var.project_domain_name) // fully qualified domain name
   formatted_domains           = formatlist("%s.%s", var.sub_domains, var.project_domain_name)
   # formatted_alternate_domains = (formatlist("%s.%s", var.sub_domains_for_alternate_domain, var.alternate_project_domain_name)) // ❗️
-  all_domains                 = concat(formatlist(var.project_domain_name), local.formatted_domains) //, local.formatted_alternate_domains) // ❗️closing bracket (col 101) need to be deleted as well
+  all_domains                 = concat(formatlist(var.project_domain_name), formatlist(local.fqdn), local.formatted_domains) #, local.formatted_alternate_domains) // ❗️closing bracket need to be deleted as well
 }
 
 variable "environment" {}

@@ -19,16 +19,16 @@ resource "aws_cloudfront_distribution" "project_cloudfront" {
     origin_access_control_id = aws_cloudfront_origin_access_control.oac.id
   }
 
-  origin {
-    origin_id   = data.aws_lb.lb_info.dns_name
-    domain_name = data.aws_lb.lb_info.dns_name
-    custom_origin_config {
-      http_port              = 80
-      https_port             = 443
-      origin_protocol_policy = "match-viewer"
-      origin_ssl_protocols   = ["TLSv1.2"]
-    }
-  }
+  # origin {
+  #   origin_id   = data.aws_lb.lb_info.dns_name
+  #   domain_name = data.aws_lb.lb_info.dns_name
+  #   custom_origin_config {
+  #     http_port              = 80
+  #     https_port             = 443
+  #     origin_protocol_policy = "match-viewer"
+  #     origin_ssl_protocols   = ["TLSv1.2"]
+  #   }
+  # }
 
   default_cache_behavior {
     target_origin_id       = local.full_origin_name
@@ -52,7 +52,12 @@ resource "aws_cloudfront_distribution" "project_cloudfront" {
 
     lambda_function_association {
       event_type = "origin-request"
-      lambda_arn = aws_lambda_function.content_handler.qualified_arn //data.aws_lambda_function.lambdaedge.qualified_arn
+      lambda_arn = aws_lambda_function.content_handler.qualified_arn
+    }
+
+    lambda_function_association {
+      event_type = "viewer-request"
+      lambda_arn = aws_lambda_function.redirect_handler.qualified_arn
     }
   }
 
@@ -78,7 +83,8 @@ resource "aws_cloudfront_distribution" "project_cloudfront" {
   }
 
   depends_on = [
-    aws_lambda_function.content_handler
+    aws_lambda_function.content_handler,
+    aws_lambda_function.redirect_handler
   ]
 }
 
