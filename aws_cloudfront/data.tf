@@ -2,12 +2,12 @@ data "aws_s3_bucket" "bucket_for_cloudfront" {
   bucket = var.bucket_for_cloudfront
 }
 
-# data "aws_lb" "lb_info" {
-#   name = var.lb_name
-# }
+data "aws_lb" "lb_info" {
+  name = var.lb_name
+}
 
 data "aws_route53_zone" "project_hosted_zone" {
-  name         = var.project_domain_name
+  name         = var.major_project_domain_name
   private_zone = false
 }
 
@@ -16,7 +16,7 @@ data "aws_iam_policy" "aws_managed_lambda" {
 }
 
 data "aws_acm_certificate" "amazon_issued" {
-  domain      = var.project_domain_name
+  domain      = var.major_project_domain_name
   most_recent = true
   # key_types = [] // RSA_1024 | RSA_2048 | RSA_3072 | RSA_4096 | EC_prime256v1 | EC_secp384r1 | EC_secp521r1
   # statuses = [] // PENDING_VALIDATION, ISSUED, INACTIVE, EXPIRED, VALIDATION_TIMED_OUT, REVOKED, FAILED
@@ -44,7 +44,7 @@ data "aws_iam_policy_document" "only_cloudfront_has_access" {
     condition {
       test     = "StringEquals"
       variable = "AWS:SourceArn"
-      values   = [aws_cloudfront_distribution.project_cloudfront.arn]
+      values   = [aws_cloudfront_distribution.s3_cloudfront.arn]
     }
   }
 }
@@ -62,4 +62,20 @@ data "aws_iam_policy_document" "for_lambda" {
     }
     actions = ["sts:AssumeRole"]
   }
+}
+
+// ----------------------------------------------------------------------
+// -------------------------ARCHIVING LAMBDAS----------------------------
+// ----------------------------------------------------------------------
+
+data "archive_file" "content" {
+  type        = "zip"
+  source_file = "./lambdas/content.py"
+  output_path = "./lambdas/content.py.zip"
+}
+
+data "archive_file" "redirect" {
+  type        = "zip"
+  source_file = "./lambdas/redirect.js"
+  output_path = "./lambdas/redirect.js.zip"
 }

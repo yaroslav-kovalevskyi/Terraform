@@ -6,32 +6,21 @@ resource "aws_cloudfront_origin_access_control" "oac" {
   signing_protocol                  = "sigv4"
 }
 
-resource "aws_cloudfront_distribution" "project_cloudfront" {
+resource "aws_cloudfront_distribution" "s3_cloudfront" {
   enabled         = true
   is_ipv6_enabled = false
-  comment         = "${var.project_name} Cloudfront Distribution Config"
-  aliases         = local.all_domains
+  comment         = "${var.project_name} s3 Cloudfront Distribution"
+  aliases         = local.all_s3_to_route
   price_class     = "PriceClass_200"
 
   origin {
-    origin_id                = local.full_origin_name
-    domain_name              = local.full_origin_name
+    origin_id                = local.full_s3_origin_name
+    domain_name              = local.full_s3_origin_name
     origin_access_control_id = aws_cloudfront_origin_access_control.oac.id
   }
 
-  # origin {
-  #   origin_id   = data.aws_lb.lb_info.dns_name
-  #   domain_name = data.aws_lb.lb_info.dns_name
-  #   custom_origin_config {
-  #     http_port              = 80
-  #     https_port             = 443
-  #     origin_protocol_policy = "match-viewer"
-  #     origin_ssl_protocols   = ["TLSv1.2"]
-  #   }
-  # }
-
   default_cache_behavior {
-    target_origin_id       = local.full_origin_name
+    target_origin_id       = local.full_s3_origin_name
     allowed_methods        = var.allowed_methods
     cached_methods         = var.cached_methods
     compress               = true
@@ -88,3 +77,55 @@ resource "aws_cloudfront_distribution" "project_cloudfront" {
   ]
 }
 
+resource "aws_cloudfront_distribution" "lb_cloudfront" {
+  enabled         = true
+  is_ipv6_enabled = false
+  comment         = "${var.project_name} LB Cloudfront Distribution"
+  aliases         = local.all_lb_to_route
+  price_class     = "PriceClass_200"
+
+  origin {
+    origin_id   = data.aws_lb.lb_info.dns_name
+    domain_name = data.aws_lb.lb_info.dns_name
+    custom_origin_config {
+      http_port              = 80
+      https_port             = 443
+      origin_protocol_policy = "match-viewer"
+      origin_ssl_protocols   = ["TLSv1.2"]
+    }
+  }
+
+  default_cache_behavior {
+    target_origin_id       = data.aws_lb.lb_info.dns_name
+    allowed_methods        = var.allowed_methods
+    cached_methods         = var.cached_methods
+    compress               = true
+    viewer_protocol_policy = "redirect-to-https"
+    min_ttl                = 0
+    default_ttl            = var.max_ttl / 2
+    max_ttl                = var.max_ttl
+
+    forwarded_values {
+      query_string = false
+
+      cookies {
+        forward = "none"
+      }
+    }
+
+  }
+
+  restrictions {
+    geo_restriction {
+      restriction_type = "blacklist"
+      locations        = var.restricted_countries
+    }
+  }
+
+  viewer_certificate {
+    cloudfront_default_certificate = false
+    acm_certificate_arn            = data.aws_acm_certificate.amazon_issued.arn
+    minimum_protocol_version       = "TLSv1.2_2019"
+    ssl_support_method             = "sni-only"
+  }
+}

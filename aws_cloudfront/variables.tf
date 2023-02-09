@@ -1,14 +1,17 @@
 locals {
-  bucket_name                 = data.aws_s3_bucket.bucket_for_cloudfront.bucket
-  bucket_region               = data.aws_s3_bucket.bucket_for_cloudfront.region
-  full_origin_name            = format("%s.s3.%s.amazonaws.com", local.bucket_name, local.bucket_region)
-  fqdn                        = format("%s%s", "www.", var.project_domain_name) // fully qualified domain name
-  formatted_domains           = formatlist("%s.%s", var.sub_domains, var.project_domain_name)
-  #formatted_alternate_domains = (formatlist("%s.%s", var.sub_domains_for_alternate_domain, var.alternate_project_domain_name)) // ❗️
-  all_domains                 = concat(formatlist(var.project_domain_name), formatlist(local.fqdn), local.formatted_domains) #, local.formatted_alternate_domains) // ❗️closing bracket need to be deleted as well
+  bucket_name             = data.aws_s3_bucket.bucket_for_cloudfront.bucket
+  bucket_region           = data.aws_s3_bucket.bucket_for_cloudfront.region
+  full_s3_origin_name     = format("%s.s3.%s.amazonaws.com", local.bucket_name, local.bucket_region)
+  fqdn                    = format("%s%s", "www.", var.major_project_domain_name) // fully qualified domain name
+  formatted_major_domains = formatlist("%s.%s", concat(var.major_s3_sub_domains, var.major_lb_sub_domains), var.major_project_domain_name)
+  formatted_minor_domains = (formatlist("%s.%s", concat(var.minor_s3_sub_domains, var.minor_lb_sub_domains), var.major_project_domain_name))
+  all_s3_to_route         = concat(formatlist("%s.%s", var.major_s3_sub_domains, var.major_project_domain_name), formatlist("%s.%s", var.minor_s3_sub_domains, var.minor_project_domain_name), formatlist(local.fqdn), formatlist(var.major_project_domain_name))
+  all_lb_to_route         = concat(formatlist("%s.%s", var.major_lb_sub_domains, var.major_project_domain_name), formatlist("%s.%s", var.minor_lb_sub_domains, var.minor_project_domain_name))
 }
 
 variable "environment" {}
+
+variable "project_name" {}
 
 variable "bucket_for_cloudfront" {
   description = "Bucket for Cloudfront origin source"
@@ -19,34 +22,36 @@ variable "lb_name" {
   description = "LoadBalancer name for Cloudfront origin source"
 }
 
-variable "project_name" {
-  description = "The name of your project"
-}
-
-variable "project_domain_name" {
+variable "major_project_domain_name" {
   description = "Main project domain name"
 }
 
-variable "sub_domains" {
+variable "major_s3_sub_domains" {
   type        = list(any)
-  description = "All sub domains which you want to use with Cloudfront"
+  description = "Sub domains which need to be mapped to main project domain name and point to static content from S3 bucket"
   default     = []
 }
 
+variable "major_lb_sub_domains" {
+  type        = list(any)
+  description = "Sub domains which need to be mapped to main project domain name and point to dynamic content from Load Balancer"
+  default     = []
+}
 
-//❗️ Uncomment all blocks with exlamation mark  
-//❗️ to switch on Cloudfront for different domain names.
-//❗️ DO NOT FORGET CHECK .TFVARS FILE AS WELL
-# variable "alternate_project_domain_name" {
-#   description = "Use in case project has content for Cloudfront, associated with another domain name"
-#   default     = ""
-# }
+variable "minor_project_domain_name" {
+  description = "Secondary project domain name"
+  default     = ""
+}
 
-# variable "sub_domains_for_alternate_domain" {
-#   description = "List of sub domains which should be associated with alternate domain name"
-#   default = []
-# }
-// ------------------------------------------------------------
+variable "minor_s3_sub_domains" {
+  description = "Sub domains which need to be mapped to secondary project domain name and point to static content from S3 bucket"
+  default     = []
+}
+
+variable "minor_lb_sub_domains" {
+  description = "Sub domains which need to be mapped to secondary project domain name and point to dynamic content from Load Balancer"
+  default     = []
+}
 
 
 variable "allowed_methods" {
