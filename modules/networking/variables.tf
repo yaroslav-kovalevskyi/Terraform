@@ -2,6 +2,7 @@
 
 variable "environment" {
   description = "Working environment | 'dev' or 'prd'"
+  type        = string
 }
 
 ######################### VPC #########################

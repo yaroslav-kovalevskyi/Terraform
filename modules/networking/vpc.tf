@@ -12,7 +12,7 @@ resource "aws_vpc" "main" {
 ######################### Subnets #########################
 
 resource "aws_subnet" "public" {
-  count                   = length(data.aws_availability_zones.in_current_region.names)
+  count                   = length(var.public_subnet_cidr)
   vpc_id                  = aws_vpc.main.id
   cidr_block              = element(var.public_subnet_cidr, count.index)
   availability_zone       = element(data.aws_availability_zones.in_current_region.names, count.index)
@@ -25,7 +25,7 @@ resource "aws_subnet" "public" {
 }
 
 resource "aws_subnet" "private" {
-  count                   = length(data.aws_availability_zones.in_current_region.names)
+  count                   = length(var.private_subnet_cidr)
   vpc_id                  = aws_vpc.main.id
   cidr_block              = element(var.private_subnet_cidr, count.index)
   availability_zone       = element(data.aws_availability_zones.in_current_region.names, count.index)
@@ -38,7 +38,7 @@ resource "aws_subnet" "private" {
 }
 
 resource "aws_subnet" "database" {
-  count                   = length(data.aws_availability_zones.in_current_region.names)
+  count                   = length(var.database_subnet_cidr)
   vpc_id                  = aws_vpc.main.id
   cidr_block              = element(var.database_subnet_cidr, count.index)
   availability_zone       = element(data.aws_availability_zones.in_current_region.names, count.index)
@@ -64,7 +64,7 @@ resource "aws_route_table" "to_Internet" {
 }
 
 resource "aws_route_table_association" "public-internet" {
-  count          = length(data.aws_availability_zones.in_current_region.names)
+  count          = length(var.public_subnet_cidr)
   subnet_id      = element(aws_subnet.public.*.id, count.index)
   route_table_id = aws_route_table.to_Internet.id
 }
