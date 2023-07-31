@@ -5,7 +5,7 @@ resource "aws_vpc" "main" {
   enable_dns_hostnames = true
 
   tags = {
-    Name = "[${var.environment}] Main VPC"
+    Name = "${var.environment} | ${var.project} VPC"
   }
 }
 
@@ -19,7 +19,7 @@ resource "aws_subnet" "public" {
   map_public_ip_on_launch = true
 
   tags = {
-    Name = "[${var.environment}] Public Subnet"
+    Name = "${var.environment} | ${var.project} Public Subnet"
     Tier = "Public"
   }
 }
@@ -32,7 +32,7 @@ resource "aws_subnet" "private" {
   map_public_ip_on_launch = true
 
   tags = {
-    Name = "[${var.environment}] Private Subnet"
+    Name = "${var.environment} | ${var.project} Private Subnet"
     Tier = "Private"
   }
 }
@@ -45,7 +45,7 @@ resource "aws_subnet" "database" {
   map_public_ip_on_launch = true
 
   tags = {
-    Name = "[${var.environment}] Database Subnet"
+    Name = "${var.environment} | ${var.project} Database Subnet"
     Tier = "Database"
   }
 }
@@ -59,7 +59,7 @@ resource "aws_route_table" "to_Internet" {
     gateway_id = aws_internet_gateway.igw.id
   }
   tags = {
-    Name = "[${var.environment}] Route Table to Internet"
+    Name = "${var.environment} | ${var.project} Route Table to Internet"
   }
 }
 
@@ -75,7 +75,7 @@ resource "aws_internet_gateway" "igw" {
   vpc_id = aws_vpc.main.id
 
   tags = {
-    Name = "[${var.environment}] Internet Gateway"
+    Name = "${var.environment} | ${var.project} Internet Gateway"
   }
 }
 

@@ -1,8 +1,10 @@
 ######################### General #########################
-
 variable "environment" {
-  description = "Working environment | 'dev' or 'prd'"
-  type        = string
+  description = "Working environment"
+}
+
+variable "project" {
+  description = "Name of Project"
 }
 
 ######################### VPC #########################
@@ -27,10 +29,3 @@ variable "database_subnet_cidr" {
   description = "CIDR blocks for Database subnets"
   default     = ["10.0.100.0/24", "10.0.200.0/24", "10.0.255.0/24"]
 }
-
-
-
-
-
-
-
