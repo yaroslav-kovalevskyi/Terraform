@@ -1,5 +1,5 @@
 output "vpc_properties" {
-  description = "List of basic VPC Properties"
+  description = "Basic VPC Properties"
   value = tomap({
     arn                                  = aws_vpc.main.arn
     default_network_acl_id               = aws_vpc.main.default_network_acl_id
@@ -14,7 +14,7 @@ output "vpc_properties" {
 }
 
 output "public_subnets_properties" {
-  description = "List of basic Public Subnets Properties"
+  description = "IDs and ARNs of Public Subnets"
   value = tomap({
     for k, subnet in aws_subnet.public : k => {
       arn = subnet.arn
@@ -24,7 +24,7 @@ output "public_subnets_properties" {
 }
 
 output "private_subnets_properties" {
-  description = "List of basic Private Subnets Properties"
+  description = "IDs and ARNs of Private Subnets"
   value = tomap({
     for k, subnet in aws_subnet.private : k => {
       arn = subnet.arn
@@ -34,7 +34,7 @@ output "private_subnets_properties" {
 }
 
 output "database_subnets_properties" {
-  description = "List of all* Database Subnets Properties"
+  description = "IDs and ARNs of Database Subnets"
   value = tomap({
     for k, subnet in aws_subnet.database : k => {
       arn = subnet.arn
@@ -44,7 +44,7 @@ output "database_subnets_properties" {
 }
 
 output "database_subnet_group_properties" {
-  description = "List of all* Database Subnet Group Properties"
+  description = "Database Subnet Group Properties (ARN, ID, VPC_ID)"
   value = tomap({
     arn    = aws_db_subnet_group.default.arn
     id     = aws_db_subnet_group.default.id

@@ -1,10 +1,12 @@
 ######################### General #########################
 variable "environment" {
   description = "Working environment"
+  type        = string
 }
 
 variable "project" {
   description = "Name of Project"
+  type        = string
 }
 
 ######################### VPC #########################
