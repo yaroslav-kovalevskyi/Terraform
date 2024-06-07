@@ -69,25 +69,6 @@ resource "aws_route_table_association" "to_Internet" {
   route_table_id = aws_route_table.to_Internet.id
 }
 
-# resource "aws_route_table" "nat" {
-#   count  = var.nat_enabled ? 1 : 0
-#   vpc_id = aws_vpc.main.id
-#   route {
-#     cidr_block     = "0.0.0.0/0"
-#     nat_gateway_id = aws_nat_gateway.nat_gateway[count.index].id
-#   }
-#   tags = {
-#     Name = "${var.environment} | ${var.project} NAT Route Table"
-#   }
-# }
-
-# resource "aws_route_table_association" "nat" {
-#   count          = length(concat(var.database_subnet_cidr, var.private_subnet_cidr))
-#   subnet_id      = element(concat(aws_subnet.database.*.id, aws_subnet.private.*.id), count.index)
-#   route_table_id = aws_route_table.nat[count].id
-# }
-
-
 ######################### Internet Gateway #########################
 
 resource "aws_internet_gateway" "igw" {
@@ -100,19 +81,36 @@ resource "aws_internet_gateway" "igw" {
 
 ######################### NAT Gateway #########################
 
-# resource "aws_eip" "nat_gateway" {
-#   count  = var.nat_enabled ? 1 : 0
-#   domain = "vpc"
-# }
+resource "aws_eip" "nat_gateway" {
+  count  = var.nat_enabled ? 1 : 0
+  domain = "vpc"
+}
 
-# resource "aws_nat_gateway" "nat_gateway" {
-#   count         = var.nat_enabled ? 1 : 0
-#   allocation_id = aws_eip.nat_gateway[count.index].id
-#   subnet_id     = aws_subnet.public[0].id
+resource "aws_nat_gateway" "nat_gateway" {
+  count         = var.nat_enabled ? 1 : 0
+  allocation_id = aws_eip.nat_gateway[count.index].id
+  subnet_id     = aws_subnet.public[0].id
 
-#   tags = {
-#     Name = "${var.environment} | ${var.project} NAT Gateway"
-#   }
+  tags = {
+    Name = "${var.environment} | ${var.project} NAT Gateway"
+  }
 
-#   depends_on = [aws_internet_gateway.igw]
-# }
+  depends_on = [aws_internet_gateway.igw]
+}
+
+resource "aws_route_table" "nat" {
+  count  = var.nat_enabled ? 1 : 0
+  vpc_id = aws_vpc.main.id
+  route {
+    cidr_block     = "0.0.0.0/0"
+    nat_gateway_id = aws_nat_gateway.nat_gateway[count.index].id
+  }
+  tags = {
+    Name = "${var.environment} | ${var.project} NAT Route Table"
+  }
+}
+resource "aws_route_table_association" "nat" {
+  count          = var.nat_enabled ? length((concat(var.database_subnet_cidr, var.private_subnet_cidr))) : 0
+  subnet_id      = element(concat(aws_subnet.database.*.id, aws_subnet.private.*.id), count.index)
+  route_table_id = aws_route_table.nat[0].id
+}
