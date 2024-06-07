@@ -29,3 +29,10 @@ variable "database_subnet_cidr" {
   description = "CIDR blocks for Database subnets"
   default     = ["10.0.100.0/24", "10.0.200.0/24", "10.0.255.0/24"]
 }
+
+######################### NAT #########################
+
+variable "nat_enabled" {
+  description = "Toggler for NAT gateway"
+  default     = false
+}
