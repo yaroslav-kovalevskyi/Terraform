@@ -22,3 +22,6 @@ variable "vpc_id" {
   default = ""
 }
 
+variable "subnets" {
+  default = []
+}

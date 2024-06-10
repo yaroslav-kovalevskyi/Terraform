@@ -4,7 +4,7 @@ resource "aws_security_group" "ec2" {
   vpc_id      = var.vpc_id
 
   ingress {
-    description = "Open SSH"
+    description = "SSH from home IP"
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
