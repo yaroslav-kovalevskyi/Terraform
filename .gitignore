@@ -1,8 +1,10 @@
-# Apple system files 
+# Folder with SSH keys created during deployment
+ssh/
+
+# Terraform state related files
+.t*
+*.tfstate*
+*.tfvars
+
+# files created by MacOS
 .DS_Store
-
-# Terraform related
-
-.terraform/
-.terraform.lock.hcl
-tfstate
