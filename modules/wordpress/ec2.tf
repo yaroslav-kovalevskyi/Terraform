@@ -6,14 +6,36 @@ resource "aws_instance" "wordpress" {
   instance_type = var.ec2_variables.instance_type
 
   # optinal fields
-  key_name  = aws_key_pair.wordpress_ec2.key_name
-  subnet_id = var.ec2_variables.public_subnet_id
-  # user_data              = file("${path.module}/wordpress_bootstrap.sh")
+  key_name               = aws_key_pair.wordpress_ec2.key_name
+  subnet_id              = var.ec2_variables.public_subnet_id
   vpc_security_group_ids = [aws_security_group.wordpress.id]
+  user_data              = <<-EOF
+    #!/bin/bash
+    echo 'DB_NAME="${aws_db_instance.main.db_name}"' > /tmp/.wp_env
+    echo 'DB_HOST="${aws_db_instance.main.address}"' >> /tmp/.wp_env
+    echo 'DB_USER="${aws_db_instance.main.username}"' >> /tmp/.wp_env
+    echo 'DB_PASSWORD="${random_password.master_password.result}"' >> /tmp/.wp_env
+    echo 'WP_TITLE="${var.project} WordPress"' >> /tmp/.wp_env
+    echo 'WP_ADMIN_USER="admin"' >> /tmp/.wp_env
+    echo 'WP_ADMIN_PASSWORD="${strrev(random_password.master_password.result)}"' >> /tmp/.wp_env
+    echo 'WP_ADMIN_EMAIL="${var.wp_admin_email}"' >> /tmp/.wp_env
+    echo 'WP_DIR="/var/www/html/wp/"' >> /tmp/.wp_env
+  EOF 
 
+  connection {
+    type        = "ssh"
+    user        = "ubuntu"
+    private_key = file(local_file.tf-key.filename)
+    host        = self.public_ip
+  }
+
+  provisioner "remote-exec" {
+    script = "../wp/wordpress_bootstrap.sh"
+  }
   tags = {
     Name = "${terraform.workspace} | ${var.project} wordpress Host instance"
   }
+
 }
 
 ########################## Key Pair ##########################
@@ -28,10 +50,6 @@ resource "local_file" "tf-key" {
   filename             = "../ssh/${terraform.workspace}_${lower(var.project)}_wordpress_ssh.pem"
   directory_permission = "0400"
   file_permission      = "0400"
-
-  #   provisioner "local-exec" {
-  #     command = "aws s3 sync ../ssh s3://${lower(var.project)}-ssh"
-  #   }
 }
 
 resource "aws_key_pair" "wordpress_ec2" {

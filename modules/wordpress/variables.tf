@@ -40,4 +40,10 @@ variable "wellknown_ip" {
   default     = {}
 }
 
+########################## WP related variables ##########################
+
+variable "wp_admin_email" {
+  description = "Declare variable to be attached to VPC from another module"
+  default     = ""
+}
 
