@@ -18,7 +18,7 @@ resource "aws_db_instance" "main" {
   identifier = var.db_variables.identifier
   #   maintenance_window                  = var.db_variables.maintenance_window
   #   max_allocated_storage               = var.db_variables.storage_max
-  publicly_accessible = var.db_variables.publicly_accessible
+  #   publicly_accessible                 = var.db_variables.publicly_accessible
   #   port                                = var.db_variables.port
   #   skip_final_snapshot                 = true
   vpc_security_group_ids = [aws_security_group.database.id]
