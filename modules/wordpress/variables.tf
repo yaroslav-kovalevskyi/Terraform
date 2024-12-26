@@ -34,14 +34,20 @@ variable "wellknown_ip" {
 
 variable "public_ports" {
   type        = map(string)
-  description = "Map of public service ports for WordPress Server"
-  default     = {}
+  description = "Map of public ports for WordPress Server"
+  default = {
+    http  = 80
+    https = 443
+  }
 }
 
 variable "internal_ports" {
   type        = map(string)
   description = "Map of internal / service ports for WordPress Server"
-  default     = {}
+  default = {
+    mysql = 3306
+    redis = 6379
+  }
 }
 
 ########################## Redis variables ##########################
