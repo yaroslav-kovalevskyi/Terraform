@@ -10,7 +10,7 @@ resource "random_password" "master_password" {
 ######################### Secrets creation #########################
 # This block put the password to AWS Secrets Manager
 resource "aws_secretsmanager_secret" "database" {
-  name                    = "${terraform.workspace}_${lower(var.project)}_database_secrets"
+  name                    = "${terraform.workspace}_${lower(var.general.project)}_database_secrets"
   recovery_window_in_days = 10
 }
 

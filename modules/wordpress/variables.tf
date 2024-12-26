@@ -1,11 +1,7 @@
-variable "project" {
-  description = "Name of Project"
-  default     = ""
-}
-
-variable "domain_name" {
-  description = "Project's domain name"
-  default     = ""
+variable "general" {
+  description = "Map of general variables"
+  type        = map(string)
+  default     = {}
 }
 ########################## Database Variables ##########################
 

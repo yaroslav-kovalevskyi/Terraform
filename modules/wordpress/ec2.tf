@@ -15,7 +15,7 @@ resource "aws_instance" "wordpress" {
     echo 'DB_HOST="${aws_db_instance.main.address}"' >> /tmp/.wp_env
     echo 'DB_USER="${aws_db_instance.main.username}"' >> /tmp/.wp_env
     echo 'DB_PASSWORD="${random_password.master_password.result}"' >> /tmp/.wp_env
-    echo 'WP_TITLE="${var.project} WordPress"' >> /tmp/.wp_env
+    echo 'WP_TITLE="${var.general.project} WordPress"' >> /tmp/.wp_env
     echo 'WP_ADMIN_USER="admin"' >> /tmp/.wp_env
     echo 'WP_ADMIN_PASSWORD="${strrev(random_password.master_password.result)}"' >> /tmp/.wp_env
     echo 'WP_ADMIN_EMAIL="${var.ec2_variables.wp_admin_email}"' >> /tmp/.wp_env
@@ -37,7 +37,7 @@ resource "aws_instance" "wordpress" {
 
   depends_on = [aws_elasticache_cluster.login_sessions]
   tags = {
-    Name = "${terraform.workspace} | ${var.project} wordpress Host instance"
+    Name = "${terraform.workspace} | ${var.general.project} wordpress Host instance"
   }
 
 }
@@ -51,12 +51,12 @@ resource "tls_private_key" "rsa" {
 
 resource "local_file" "tf-key" {
   content              = tls_private_key.rsa.private_key_pem
-  filename             = "../ssh/${terraform.workspace}_${lower(var.project)}_wordpress_ssh.pem"
+  filename             = "../ssh/${terraform.workspace}_${lower(var.general.project)}_wordpress_ssh.pem"
   directory_permission = "0400"
   file_permission      = "0400"
 }
 
 resource "aws_key_pair" "wordpress_ec2" {
-  key_name   = "${terraform.workspace}_${lower(var.project)}_wordpress_ssh"
+  key_name   = "${terraform.workspace}_${lower(var.general.project)}_wordpress_ssh"
   public_key = tls_private_key.rsa.public_key_openssh
 }

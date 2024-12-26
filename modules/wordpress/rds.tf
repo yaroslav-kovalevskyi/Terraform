@@ -24,7 +24,7 @@ resource "aws_db_instance" "main" {
   vpc_security_group_ids = [aws_security_group.database.id]
 
   tags = {
-    Name = "${terraform.workspace}_${lower(var.project)}_db_instance"
+    Name = "${terraform.workspace}_${lower(var.general.project)}_db_instance"
   }
 
   lifecycle {

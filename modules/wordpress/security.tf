@@ -32,7 +32,7 @@ resource "aws_security_group" "database" {
   }
 
   tags = {
-    Name = "${terraform.workspace} | ${var.project} Database Security Group"
+    Name = "${terraform.workspace} | ${var.general.project} Database Security Group"
   }
 }
 
@@ -85,7 +85,7 @@ resource "aws_security_group" "wordpress" {
   }
 
   tags = {
-    Name = "${terraform.workspace} | ${var.project} Wordpress Security Group"
+    Name = "${terraform.workspace} | ${var.general.project} Wordpress Security Group"
   }
 }
 
@@ -113,6 +113,6 @@ resource "aws_security_group" "redis" {
   }
 
   tags = {
-    Name = "${terraform.workspace} | ${var.project} Redis Security Group"
+    Name = "${terraform.workspace} | ${var.general.project} Redis Security Group"
   }
 }

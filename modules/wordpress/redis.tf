@@ -1,5 +1,5 @@
 resource "aws_elasticache_subnet_group" "redis" {
-  name       = "${terraform.workspace}-${var.project}-cache-subnet-group"
+  name       = "${terraform.workspace}-${var.general.project}-cache-subnet-group"
   subnet_ids = var.private_subnets
 }
 
