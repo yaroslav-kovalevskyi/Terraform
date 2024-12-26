@@ -2,7 +2,7 @@
 resource "aws_security_group" "database" {
   description = "Security group for database. Accessible only from Wordpress Server"
   name        = "database_secured"
-  vpc_id      = var.vpc_id
+  vpc_id      = var.vpc_properties.vpc_id
 
   dynamic "ingress" {
     for_each = var.wellknown_ip
@@ -41,7 +41,7 @@ resource "aws_security_group" "database" {
 resource "aws_security_group" "wordpress" {
   description = "Security group for wordpress. Accessible from well known IP addresses"
   name        = "wordpress_secured"
-  vpc_id      = var.vpc_id
+  vpc_id      = var.vpc_properties.vpc_id
 
   dynamic "ingress" {
     for_each = var.wellknown_ip
@@ -55,10 +55,21 @@ resource "aws_security_group" "wordpress" {
   }
 
   dynamic "ingress" {
-    for_each = var.service_ports
+    for_each = var.public_ports
     content {
       description = ingress.key
       cidr_blocks = ["0.0.0.0/0"]
+      from_port   = ingress.value
+      to_port     = ingress.value
+      protocol    = "tcp"
+    }
+  }
+
+  dynamic "ingress" {
+    for_each = var.internal_ports
+    content {
+      description = ingress.key
+      cidr_blocks = ["${var.vpc_properties.cidr_block}"]
       from_port   = ingress.value
       to_port     = ingress.value
       protocol    = "tcp"
@@ -83,7 +94,7 @@ resource "aws_security_group" "wordpress" {
 resource "aws_security_group" "redis" {
   description = "Security group for Reds. Accessible only from WordPress Server"
   name        = "redis_secured"
-  vpc_id      = var.vpc_id
+  vpc_id      = var.vpc_properties.vpc_id
 
   ingress {
     description     = "Open Redis port. Accessible only from WP and DB servers"

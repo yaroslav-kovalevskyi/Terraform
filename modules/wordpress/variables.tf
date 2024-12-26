@@ -23,9 +23,10 @@ variable "ec2_variables" {
   default     = {}
 }
 
-variable "vpc_id" {
-  description = "Declare variable to be attached to VPC from another module"
-  default     = ""
+variable "vpc_properties" {
+  description = "Map of VPC properties"
+  type        = map(string)
+  default     = {}
 }
 
 variable "wellknown_ip" {
@@ -35,9 +36,15 @@ variable "wellknown_ip" {
 }
 
 
-variable "service_ports" {
+variable "public_ports" {
   type        = map(string)
-  description = "List of service ports for WordPress Server"
+  description = "Map of public service ports for WordPress Server"
+  default     = {}
+}
+
+variable "internal_ports" {
+  type        = map(string)
+  description = "Map of internal / service ports for WordPress Server"
   default     = {}
 }
 
