@@ -10,6 +10,7 @@ output "vpc_properties" {
     ipv6_cidr_block_network_border_group = aws_vpc.main.ipv6_cidr_block_network_border_group
     main_route_table_id                  = aws_vpc.main.main_route_table_id
     owner_id                             = aws_vpc.main.owner_id
+    cidr_block                           = aws_vpc.main.cidr_block
   })
 }
 
