@@ -10,7 +10,7 @@ variable "domain_name" {
 ########################## Database Variables ##########################
 
 variable "db_variables" {
-  description = "Declaring list of database variables"
+  description = "Map of database variables"
   type        = map(string)
   default     = {}
 }
@@ -18,13 +18,7 @@ variable "db_variables" {
 ########################## EC2 Variables ##########################
 
 variable "ec2_variables" {
-  description = "Declaring list of EC2 variables"
-  type        = map(string)
-  default     = {}
-}
-
-variable "external_vars" {
-  description = "Declaring variable to get environment values from neighbor modules"
+  description = "Map of EC2 variables"
   type        = map(string)
   default     = {}
 }
@@ -40,10 +34,22 @@ variable "wellknown_ip" {
   default     = {}
 }
 
-########################## WP related variables ##########################
 
-variable "wp_admin_email" {
-  description = "Declare variable to be attached to VPC from another module"
-  default     = ""
+variable "service_ports" {
+  type        = map(string)
+  description = "List of service ports for WordPress Server"
+  default     = {}
 }
 
+########################## Redis variables ##########################
+
+variable "redis_variables" {
+  description = "Map of Redis variables"
+  type        = map(string)
+  default     = {}
+}
+
+variable "private_subnets" {
+  description = "List of Private Subnet IDs"
+  default     = []
+}

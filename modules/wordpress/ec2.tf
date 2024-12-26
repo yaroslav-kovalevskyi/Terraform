@@ -18,8 +18,10 @@ resource "aws_instance" "wordpress" {
     echo 'WP_TITLE="${var.project} WordPress"' >> /tmp/.wp_env
     echo 'WP_ADMIN_USER="admin"' >> /tmp/.wp_env
     echo 'WP_ADMIN_PASSWORD="${strrev(random_password.master_password.result)}"' >> /tmp/.wp_env
-    echo 'WP_ADMIN_EMAIL="${var.wp_admin_email}"' >> /tmp/.wp_env
+    echo 'WP_ADMIN_EMAIL="${var.ec2_variables.wp_admin_email}"' >> /tmp/.wp_env
     echo 'WP_DIR="/var/www/html/wp/"' >> /tmp/.wp_env
+    echo 'REDIS_ENDPOINT="${aws_elasticache_cluster.login_sessions.cache_nodes[0]["address"]}"' >> /tmp/.wp_env
+    echo 'REDIS_PORT="${aws_elasticache_cluster.login_sessions.cache_nodes[0]["port"]}"' >> /tmp/.wp_env
   EOF 
 
   connection {
@@ -32,6 +34,8 @@ resource "aws_instance" "wordpress" {
   provisioner "remote-exec" {
     script = "../wp/wordpress_bootstrap.sh"
   }
+
+  depends_on = [aws_elasticache_cluster.login_sessions]
   tags = {
     Name = "${terraform.workspace} | ${var.project} wordpress Host instance"
   }
@@ -56,5 +60,3 @@ resource "aws_key_pair" "wordpress_ec2" {
   key_name   = "${terraform.workspace}_${lower(var.project)}_wordpress_ssh"
   public_key = tls_private_key.rsa.public_key_openssh
 }
-
-
